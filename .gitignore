@@ -134,7 +134,6 @@ dmypy.json
 .idea/vcs.xml
 
 images/FnrrSUtoct0.jpg
-test_ocr.py
 thresh.py
 utils.py
 images/FnrrSUtoct0.jpg

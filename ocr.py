@@ -6,7 +6,7 @@ import numpy as np
 import imutils
 import tensorflow as tf
 from tensorflow.compat.v1 import InteractiveSession
-
+import time
 
 def find(contours, count):
 	d = {}
@@ -85,6 +85,7 @@ def getLabels(model, chars, cnts, labelNames):
 
 
 def detection(image_path, count):
+	start = time.time()
 	#image - путь к изображению
 	#count - количество символов, включая id + ответы на сам тест
 	###tf config###
@@ -93,6 +94,7 @@ def detection(image_path, count):
 	session = InteractiveSession(config=config)
 	##model and labels###
 	model = load_model("model/handwriting.model")
+	print(time.time()-start)
 	labelNames = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	labelNames = [l for l in labelNames]
 
@@ -105,4 +107,5 @@ def detection(image_path, count):
 	chars = getChars(copy, cnts)
 
 	labels = getLabels(model, chars, cnts, labelNames)
+	print(time.time()-start)
 	return labels
