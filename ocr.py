@@ -48,8 +48,8 @@ def getContours(img, count):
 		x, y, w, h = cv2.boundingRect(c)
 		if (w >= 5 and w <= 150) and (h >= 15 and h <= 200):
 			new_cnts.append(c)
-
-	cnts = find(new_cnts, count)
+	cnts = new_cnts
+	cnts = find(cnts, count)
 	return cnts
 
 
@@ -84,7 +84,7 @@ def getLabels(model, chars, cnts, labelNames):
 	return labels
 
 
-def detection(image, count):
+def detection(image_path, count):
 	#image - путь к изображению
 	#count - количество символов, включая id + ответы на сам тест
 	###tf config###
@@ -96,10 +96,13 @@ def detection(image, count):
 	labelNames = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	labelNames = [l for l in labelNames]
 
-	img = cv2.imread(image, 0)
+	img = cv2.imread(image_path, 0)
 	img = cv2.resize(img, (480, 640), cv2.INTER_CUBIC)
+
 	copy = img.copy()
+
 	cnts = getContours(img, count)
-	chars = getChars(cnts, copy)
+	chars = getChars(copy, cnts)
+
 	labels = getLabels(model, chars, cnts, labelNames)
 	return labels
