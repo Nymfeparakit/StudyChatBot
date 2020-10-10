@@ -1,4 +1,5 @@
 import test
+import json
 
 TEACHER_CODE = "qweqwe"
 
@@ -11,3 +12,39 @@ def teacher_auth(update, context):
         test.execute_query(query)
         context.bot.send_message(chat_id=update.effective_chat.id,
                                  text="Вы успешно авторизованы в качестве преподавателя!")
+
+def get_user_id_by_surname(surname):
+    query = f"select id from users where surname='{surname}'"
+    return test.execute_query(query)[0]["id"]
+
+def get_test_result(update, context):
+    test_id = context.args[0]
+    surname = context.args[1]
+
+    context.bot.send_message(chat_id=update.effective_chat.id, text="check auth...")
+    check_id = update.message.from_user.id
+    #context.bot.send_message(chat_id=update.effective_chat.id,
+                             #text=check_id)
+
+    query = f"select class from users where id={check_id}"
+    check_res = test.execute_query(query)[0]["class"]
+    #print("check_res: ", check_res)
+    if (check_res != "t"):
+        context.bot.send_message(chat_id=update.effective_chat.id,
+                                 text=f"У вас нет соответсвующих прав доступа")
+        return
+
+    user_id = get_user_id_by_surname(surname)
+    query = f"select result from performed_tests " \
+            f"where user_id={user_id} and test_id='{test_id}'"
+    result = json.loads(test.execute_query(query)[0]["result"])
+    success_percentage = round(sum(result)/len(result)*100,1)
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                         text=result)
+    context.bot.send_message(chat_id=update.effective_chat.id,
+                             text=f"Тест выполнен на {success_percentage}%")
+
+
+
+
+
