@@ -1,6 +1,6 @@
 import json
 import test
-import ocr
+from ocr import detection
 def get_test_result(test_id, user_answers):
     correct_ans = get_test_correct_answers(test_id)
     # сравниваем ответы
@@ -28,6 +28,8 @@ def load_test_results(update, context):
     test_date = 'dddd'
     test_num = 'T5'
     user_answers = "qweryt"
+    user_answers = detection("user_photo.jpg",6)
+    print("user_answer:",user_answers)
     # определяем правильность ответов
     test_res = json.dumps(get_test_result(test_num, user_answers))
     print("test res:", test_res)
