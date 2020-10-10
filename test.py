@@ -1,8 +1,9 @@
 from telegram.ext import Updater
 import logging
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, MessageHandler, Filters
 import pymysql
 from pymysql.cursors import DictCursor
+import tests_check
 
 HOST = 'sql7.freesqldatabase.com'
 USER = 'sql7369890'
@@ -29,12 +30,12 @@ def sched(update, context):
 			group_name = get_group(update.message.from_user.id)
 			subjects_list = get_schedule_for_weekday(group_name, week_day)
 			context.bot.send_message(chat_id=update.effective_chat.id, text=subjects_list)
-	else:
-		class_name = context.args[0]
-		week_day = context.args[1]
-		context.bot.send_message(chat_id=update.effective_chat.id, text="Math\nLiterature")
-		user_id = update.message.from_user.id
-		context.bot.send_message(chat_id=update.effective_chat.id, text=user_id)
+		else:
+			class_name = context.args[0]
+			week_day = context.args[1]
+			context.bot.send_message(chat_id=update.effective_chat.id, text="Math\nLiterature")
+			user_id = update.message.from_user.id
+			context.bot.send_message(chat_id=update.effective_chat.id, text=user_id)
 
 def execute_query(query):
 	connection = pymysql.connect(
@@ -102,7 +103,9 @@ if __name__ == '__main__':
 	sched_handler = CommandHandler('sched', sched)
 	group_handler = CommandHandler('group', show_user_group)
 	get_group_handler = CommandHandler('setgroup', set_group)
+	test_img_handler = MessageHandler(Filters.photo, tests_check.load_test_results)
 	dispatcher.add_handler(sched_handler)
 	dispatcher.add_handler(group_handler)
 	dispatcher.add_handler(get_group_handler)
+	dispatcher.add_handler(test_img_handler)
 	updater.start_polling()
