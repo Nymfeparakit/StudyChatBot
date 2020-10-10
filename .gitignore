@@ -132,3 +132,12 @@ dmypy.json
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/StudyChatBot.iml
 .idea/vcs.xml
+*.jpg
+*.png
+images/FnrrSUtoct0.jpg
+test_ocr.py
+thresh.py
+utils.py
+images/FnrrSUtoct0.jpg
+images/FnrrSUtoct0.jpg
+images/FnrrSUtoct0.jpg
