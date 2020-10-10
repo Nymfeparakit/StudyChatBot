@@ -10,15 +10,25 @@ PASSWORD = 'bjJP6JdVrq'
 DB = 'sql7369890'
 CHARSET = 'utf8mb4'
 
+def get_weekday_name_from_number(day_num):
+	return {0: "Monday",
+			1: "Tuesday",
+			2: "Wednesday",
+			3: "Thursday",
+			4: "Friday",
+			5: "Saturday",
+			6: "Sunday"}[day_num]
+
 def sched(update, context):
 	if len(context.args) == 1:
 		arg = context.args[0]
 		if arg == "today":
 			msg_date = update.message.date
-			week_day = msg_date.weekday()
+			week_day = get_weekday_name_from_number(msg_date.weekday())
+			print("week day:", week_day)
 			group_name = get_group(update.message.from_user.id)
 			subjects_list = get_schedule_for_weekday(group_name, week_day)
-			print("subjects list:",subjects_list)
+			context.bot.send_message(chat_id=update.effective_chat.id, text=subjects_list)
 	else:
 		class_name = context.args[0]
 		week_day = context.args[1]
@@ -47,9 +57,11 @@ def execute_query(query):
 	return result
 
 def get_schedule_for_weekday(group_name, weekday):
-	query = f"select subject from sched where date={weekday}"
+	query = f"select subject from sched where date='{weekday}' and class='{group_name}'"
+	print("query:", query)
 	subjects = execute_query(query)
-	return subjects
+	subjects_list = '\n'.join([subj_dict['subject'] for subj_dict in subjects])
+	return subjects_list
 
 def get_group(user_id):
 	query = f"select class from users where id={user_id}"
