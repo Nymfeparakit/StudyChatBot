@@ -1,6 +1,6 @@
 import json
 import test
-
+import ocr
 def get_test_result(test_id, user_answers):
     correct_ans = get_test_correct_answers(test_id)
     # сравниваем ответы
@@ -22,7 +22,7 @@ def load_test_results(update, context):
     photo_file.download('user_photo.jpg')
     user_id = user.id
     # распознали ответы на фото
-    # из фото также получаем - фамилия, класс, дата, номер теста
+    # из фото также получаем - фамилия,tests_check.load_test_results класс, дата, номер теста
     surname = 'aaaa'
     group = 'bbbb'
     test_date = 'dddd'

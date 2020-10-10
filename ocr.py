@@ -85,6 +85,8 @@ def getLabels(model, chars, cnts, labelNames):
 
 
 def detection(image, count):
+	#image - путь к изображению
+	#count - количество символов, включая id + ответы на сам тест
 	###tf config###
 	config = tf.ConfigProto()
 	config.gpu_options.allow_growth = True
