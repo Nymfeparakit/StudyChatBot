@@ -4,6 +4,7 @@ from telegram.ext import CommandHandler, MessageHandler, Filters
 import pymysql
 from pymysql.cursors import DictCursor
 import tests_check
+import teacher
 
 HOST = 'sql7.freesqldatabase.com'
 USER = 'sql7369890'
@@ -104,8 +105,10 @@ if __name__ == '__main__':
 	group_handler = CommandHandler('group', show_user_group)
 	get_group_handler = CommandHandler('setgroup', set_group)
 	test_img_handler = MessageHandler(Filters.photo, tests_check.load_test_results)
+	auth_teacher_handler = CommandHandler('teach_auth', teacher.teacher_auth)
 	dispatcher.add_handler(sched_handler)
 	dispatcher.add_handler(group_handler)
 	dispatcher.add_handler(get_group_handler)
 	dispatcher.add_handler(test_img_handler)
+	dispatcher.add_handler(auth_teacher_handler)
 	updater.start_polling()
