@@ -1,3 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
 from telegram.ext import Updater
 import logging
 from telegram.ext import CommandHandler, MessageHandler, Filters
@@ -6,7 +10,6 @@ from pymysql.cursors import DictCursor
 import tests_check
 import teacher
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-# -*- coding: utf-8 -*-
 HOST = 'sql7.freesqldatabase.com'
 USER = 'sql7369890'
 PASSWORD = 'bjJP6JdVrq'
