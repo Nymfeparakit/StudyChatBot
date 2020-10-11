@@ -84,13 +84,15 @@ def execute_query(query):
 		cursorclass=DictCursor
 	)
 
-	result = []
-	with connection.cursor() as cursor:
-		cursor.execute(query)
-		for row in cursor:
-			result.append(row)
-		connection.commit()
-
+	try:
+		result = []
+		with connection.cursor() as cursor:
+			cursor.execute(query)
+			for row in cursor:
+				result.append(row)
+			connection.commit()
+	except:
+		connection.close()
 	connection.close()
 	return result
 
