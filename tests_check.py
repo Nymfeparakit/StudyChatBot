@@ -29,10 +29,13 @@ def load_test_results(update, context):
     test_date = 'dddd'
     test_num = 'T5'
     user_answers = "qweryt"
-    user_answers = detection("user_photo.jpg",9)
+    user_answers_full = detection("user_photo.jpg",9)
+
+    test_num = user_answers_full[0]+user_answers_full[1]+user_answers_full[2]
+    user_answers = user_answers_full[3:9]
 
     # first three symbols from user_answers are the test_id, other - answers
-
+    print("test_num:", test_num)
     print("user_answer:",user_answers)
     # определяем правильность ответов
     test_res = json.dumps(get_test_result(test_num, user_answers))
