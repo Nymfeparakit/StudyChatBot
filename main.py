@@ -92,7 +92,9 @@ def execute_query(query):
 				result.append(row)
 			connection.commit()
 	except:
+		cursor.close()
 		connection.close()
+	cursor.close()
 	connection.close()
 	return result
 
