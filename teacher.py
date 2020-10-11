@@ -23,7 +23,7 @@ def get_user_id_by_surname(surname):
 
 def get_test_result(update, context):
     if len(context.args) != 2:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /result")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /result \n Пример: /result qweqwe")
         return
 
     test_id = context.args[0]
