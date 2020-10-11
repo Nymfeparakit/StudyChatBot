@@ -94,12 +94,10 @@ def execute_query(query):
 			for row in cursor:
 				result.append(row)
 			connection.commit()
-	except:
+	finally:
 		cursor.close()
 		connection.close()
-	cursor.close()
-	connection.close()
-	return result
+		return result
 
 def get_schedule_for_weekday(weekday, group):
 	query = f"select subject from sched where date='{weekday}' and class='{group}'"
