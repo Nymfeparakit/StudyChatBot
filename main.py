@@ -15,6 +15,7 @@ USER = 'sql7369890'
 PASSWORD = 'bjJP6JdVrq'
 DB = 'sql7369890'
 CHARSET = 'utf8mb4'
+import time
 
 def get_weekday_name_from_number(day_num):
 	return {0: "Monday",
@@ -97,6 +98,7 @@ def execute_query(query):
 	finally:
 		cursor.close()
 		connection.close()
+		time.sleep(0.2)
 		return result
 
 def get_schedule_for_weekday(weekday, group):
