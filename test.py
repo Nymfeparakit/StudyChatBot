@@ -21,22 +21,47 @@ def get_weekday_name_from_number(day_num):
 			5: "Saturday",
 			6: "Sunday"}[day_num]
 
+def get_weekday_from_short_name(day_name):
+	if day_name in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
+		return day_name
+
+	return {"Mon": "Monday",
+			"Tue": "Tuesday",
+			"Wed": "Wednesday",
+			"Thu": "Thursday",
+			"Fri": "Friday",
+			"Sat": "Saturday",
+			"Sun": "Sunday"}[day_name]
+
 def sched(update, context):
 	if len(context.args) == 1:
 		arg = context.args[0]
 		if arg == "today":
 			msg_date = update.message.date
 			week_day = get_weekday_name_from_number(msg_date.weekday())
-			print("week day:", week_day)
 			group_name = get_group(update.message.from_user.id)
-			subjects_list = get_schedule_for_weekday(group_name, week_day)
+			subjects_list = get_schedule_for_weekday(week_day, group_name)
 			context.bot.send_message(chat_id=update.effective_chat.id, text=subjects_list)
 		else:
-			class_name = context.args[0]
-			week_day = context.args[1]
-			context.bot.send_message(chat_id=update.effective_chat.id, text="Math\nLiterature")
-			user_id = update.message.from_user.id
-			context.bot.send_message(chat_id=update.effective_chat.id, text=user_id)
+			week_day = get_weekday_from_short_name(context.args[0])
+			group_name = get_group(update.message.from_user.id)
+			subj_list = get_schedule_for_weekday(week_day, group_name)
+			context.bot.send_message(chat_id=update.effective_chat.id, text=subj_list)
+
+
+def help(update, context):
+	help_text =  "Список команд:\n" \
+		   "/setgroup <Класс> - Указать свой класс\n" \
+		   "/group - Узнать свой класс\n" \
+		   "/sched today - Расписание на сегодня\n" \
+		   "/sched <День недели> - Расписание на день недели\n" \
+			"*** Для преподавателей ***\n" \
+		   "/teach_auth <Код> - Авторизация в качестве преподавателя\n" \
+		   "/result <Номер теста> <Фамилия ученика> - Узнать результаты тестов ученика\n" \
+		   "****************************\n" \
+		   "Для проверки теста приложите его фотографию\n"
+	context.bot.send_message(chat_id=update.effective_chat.id, text=help_text)
+
 
 def execute_query(query):
 	connection = pymysql.connect(
@@ -58,9 +83,8 @@ def execute_query(query):
 	connection.close()
 	return result
 
-def get_schedule_for_weekday(group_name, weekday):
-	query = f"select subject from sched where date='{weekday}' and class='{group_name}'"
-	print("query:", query)
+def get_schedule_for_weekday(weekday, group):
+	query = f"select subject from sched where date='{weekday}' and class='{group}'"
 	subjects = execute_query(query)
 	subjects_list = '\n'.join([subj_dict['subject'] for subj_dict in subjects])
 	return subjects_list
@@ -107,10 +131,12 @@ if __name__ == '__main__':
 	test_img_handler = MessageHandler(Filters.photo, tests_check.load_test_results)
 	auth_teacher_handler = CommandHandler('teach_auth', teacher.teacher_auth)
 	get_test_result_handler = CommandHandler('result', teacher.get_test_result)
+	help_handler = CommandHandler('help', help)
 	dispatcher.add_handler(sched_handler)
 	dispatcher.add_handler(group_handler)
 	dispatcher.add_handler(get_group_handler)
 	dispatcher.add_handler(test_img_handler)
 	dispatcher.add_handler(auth_teacher_handler)
 	dispatcher.add_handler(get_test_result_handler)
+	dispatcher.add_handler(help_handler)
 	updater.start_polling()
