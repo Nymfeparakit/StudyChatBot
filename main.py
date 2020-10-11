@@ -119,7 +119,7 @@ def show_user_group(update, context):
 
 def set_group(update, context):
 	if len(context.args) != 1:
-		context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /setgroup")
+		context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /setgroup 1A")
 		return
 	group_name = context.args[0]
 	connection = pymysql.connect(
