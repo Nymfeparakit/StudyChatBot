@@ -1,5 +1,5 @@
 import json
-import test
+import main
 from ocr import detection
 
 def get_test_result(test_id, user_answers):
@@ -14,7 +14,7 @@ def get_test_result(test_id, user_answers):
 
 def get_test_correct_answers(test_id):
     query = f"select answers from test_keys where id='{test_id}'"
-    return test.execute_query(query)[0]["answers"]
+    return main.execute_query(query)[0]["answers"]
 
 
 def load_test_results(update, context):
@@ -40,4 +40,4 @@ def load_test_results(update, context):
     # загружаем ответы в БД
     query = f"insert into performed_tests (user_id, test_id, date, result) " \
             f"values({user_id}, '{test_num}', '{test_date}', '{test_res}')"
-    test.execute_query(query)
+    main.execute_query(query)

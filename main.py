@@ -5,6 +5,7 @@ import pymysql
 from pymysql.cursors import DictCursor
 import tests_check
 import teacher
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 HOST = 'sql7.freesqldatabase.com'
 USER = 'sql7369890'
@@ -138,6 +139,20 @@ def set_group(update, context):
 	context.bot.send_message(chat_id=update.effective_chat.id, text="inserted")
 
 
+def start(update, context):
+	keyboard = [
+		[
+			InlineKeyboardButton("Option 1", callback_data='1'),
+			InlineKeyboardButton("Option 2", callback_data='2'),
+		],
+		[InlineKeyboardButton("Option 3", callback_data='3')],
+	]
+
+	reply_markup = InlineKeyboardMarkup(keyboard)
+
+	update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+
 if __name__ == '__main__':
 	updater = Updater(token='1089747994:AAGy05lbD93Tjov6dFEiKxRNrRz0jikARQQ', use_context=True)
 	dispatcher = updater.dispatcher
@@ -155,4 +170,5 @@ if __name__ == '__main__':
 	dispatcher.add_handler(auth_teacher_handler)
 	dispatcher.add_handler(get_test_result_handler)
 	dispatcher.add_handler(help_handler)
+	# updater.dispatcher.add_handler(CommandHandler('start', start))
 	updater.start_polling()
