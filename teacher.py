@@ -5,6 +5,10 @@ TEACHER_CODE = "qweqwe"
 
 
 def teacher_auth(update, context):
+    if len(context.args) != 1:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /teach_auth")
+        return
+
     entered_code = context.args[0]
     if entered_code == TEACHER_CODE:
         query = f"insert into users (id, class, surname) " \
@@ -18,6 +22,10 @@ def get_user_id_by_surname(surname):
     return test.execute_query(query)[0]["id"]
 
 def get_test_result(update, context):
+    if len(context.args) != 2:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /result")
+        return
+
     test_id = context.args[0]
     surname = context.args[1]
 
@@ -38,6 +46,10 @@ def get_test_result(update, context):
     query = f"select result from performed_tests " \
             f"where user_id={user_id} and test_id='{test_id}'"
     result = json.loads(test.execute_query(query)[0]["result"])
+    if len(result) == 0:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Данные не найдены")
+        return
+
     success_percentage = round(sum(result)/len(result)*100,1)
     context.bot.send_message(chat_id=update.effective_chat.id,
                          text=result)

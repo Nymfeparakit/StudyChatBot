@@ -19,7 +19,7 @@ def get_weekday_name_from_number(day_num):
 			3: "Thursday",
 			4: "Friday",
 			5: "Saturday",
-			6: "Sunday"}[day_num]
+			6: "Sunday"}.get(day_num, "Nonday")
 
 def get_weekday_from_short_name(day_name):
 	if day_name in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]:
@@ -31,7 +31,7 @@ def get_weekday_from_short_name(day_name):
 			"Thu": "Thursday",
 			"Fri": "Friday",
 			"Sat": "Saturday",
-			"Sun": "Sunday"}[day_name]
+			"Sun": "Sunday"}.get(day_name, "Nonday")
 
 def sched(update, context):
 	if len(context.args) == 1:
@@ -41,12 +41,22 @@ def sched(update, context):
 			week_day = get_weekday_name_from_number(msg_date.weekday())
 			group_name = get_group(update.message.from_user.id)
 			subjects_list = get_schedule_for_weekday(week_day, group_name)
+			if len(subjects_list) == 0:
+				context.bot.send_message(chat_id=update.effective_chat.id, text="Данные не найдены")
 			context.bot.send_message(chat_id=update.effective_chat.id, text=subjects_list)
 		else:
 			week_day = get_weekday_from_short_name(context.args[0])
+			if week_day == "Nonday":
+				context.bot.send_message(chat_id=update.effective_chat.id, text="Некорректное название дня недели")
+				return
 			group_name = get_group(update.message.from_user.id)
 			subj_list = get_schedule_for_weekday(week_day, group_name)
+			if len(subj_list) == 0:
+				context.bot.send_message(chat_id=update.effective_chat.id, text="Данные не найдены")
+				return
 			context.bot.send_message(chat_id=update.effective_chat.id, text=subj_list)
+	else:
+		context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /sched")
 
 
 def help(update, context):
@@ -95,10 +105,16 @@ def get_group(user_id):
 	return group
 
 def show_user_group(update, context):
+	if len(context.args) != 0:
+		context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /group")
+		return
 	group_name = get_group(update.message.from_user.id)
 	context.bot.send_message(chat_id=update.effective_chat.id, text=f"{group_name}")
 
 def set_group(update, context):
+	if len(context.args) != 1:
+		context.bot.send_message(chat_id=update.effective_chat.id, text="Неверно заданы параметры команды /setgroup")
+		return
 	group_name = context.args[0]
 	connection = pymysql.connect(
 		host=HOST,
